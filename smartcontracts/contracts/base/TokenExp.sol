@@ -35,6 +35,7 @@ contract TokenExp is ERC20, Ownable {
       bondingCurveDecimals = _bondingCurveDecimals;
       dec = (10 ** uint256(bondingCurveDecimals));
       sellRatioPerMille = _sellRatioPerMille;
+      multiple = 10 ** 10;
   }
 
   // to compute poolBalance for any given price use integral y = m * 1/3 * x ^ 3
@@ -63,9 +64,9 @@ contract TokenExp is ERC20, Ownable {
 
     uint256 totalTokens = totalSupply_ - tokenAmount;
     uint256 buyPrice = poolBalance - multiple * totalTokens * totalTokens * totalTokens * 1 / ( 3 * dec * dec * dec);
-    uint finalReward = sellRatioPerMille * buyPrice / 1000;
+    uint256 finalReward = sellRatioPerMille * buyPrice / 1000;
 
-    uint ownerPayout = buyPrice - finalReward;
+    uint256 ownerPayout = buyPrice - finalReward;
     owner.transfer(ownerPayout);
 
     return finalReward;
@@ -102,8 +103,7 @@ contract TokenExp is ERC20, Ownable {
    * gas cost ~ $1.5
    * @return {bool}
    */
-  function buyTokens(uint256 _wei) public payable returns (bool) {
-    uint256 tokenAmount = estimateTokenAmountForPrice(_wei);
+  function buyTokens(uint256 tokenAmount) public payable returns (bool) {
     uint256 priceForAmount = getBuyPrice(tokenAmount);
     require(msg.value >= priceForAmount, 'Insufficient Ether to buy desired amount of tokens');
 

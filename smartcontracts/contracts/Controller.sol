@@ -7,12 +7,13 @@ contract Controller is Ownable {
   address[] public tokenArenas;
   mapping(address => uint) public indexes;
 
-  function registerTokenArena(address _tokenArenaAddress, string _name)
+  function registerTokenArena(address _newAddress)
     public
   {
-    require(isContract(_tokenArenaAddress)); // TODO: harder checks
+    // TODO: prevent anyone from adding addresses but only allow
+    // valid addresses
 
-    tokenArenas[tokenArenas.length] = _tokenArenaAddress;
+    tokenArenas[tokenArenas.length] = _newAddress;
   }
 
   function unregisterTokenArena(address _tokenArenaAddress)

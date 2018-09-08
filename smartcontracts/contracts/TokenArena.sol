@@ -22,7 +22,7 @@ contract TokenArena is TokenExp {
     TokenExp(18, 900) // 18 as bondingCurveDecimals, 90% sell curve (10% penalty compared to buys)
   {
     controller = Controller(_controllerAddress);
-    controller.registerTokenArena(address(this), _name);
+    controller.registerTokenArena(address(this));
 
     name = _name;
   }
@@ -62,9 +62,9 @@ contract TokenArena is TokenExp {
     return true;
   }
 
-  function buy() public payable returns(bool) {
+  function buy(uint256 amount) public payable returns(bool) {
     // Users can buy all the time. Also when locked.
-    return buyTokens(msg.value);
+    return buyTokens(amount);
   }
 
   function sell(uint256 _amount) public returns(bool) {
