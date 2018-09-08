@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import ChartistGraph from "react-chartist";
 import { Grid, Row, Col } from "react-bootstrap";
 import BondedToken from "components/BondedToken/BondedToken";
-
+import { connect } from 'react-redux';
 import { Card } from "components/Card/Card.jsx";
 import { StatsCard } from "components/StatsCard/StatsCard.jsx";
 import { Tasks } from "components/Tasks/Tasks.jsx";
@@ -159,5 +159,6 @@ class Dashboard extends Component {
     );
   }
 }
+
 
 export default Dashboard;

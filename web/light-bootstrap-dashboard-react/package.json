@@ -16,9 +16,11 @@
     "react-easy-chart": "^1.0.0",
     "react-google-maps": "9.4.5",
     "react-notification-system": "0.2.17",
+    "react-redux": "^5.0.7",
     "react-router-dom": "4.2.2",
     "react-scripts": "1.1.1",
-    "recharts": "^1.2.0"
+    "recharts": "^1.2.0",
+    "redux": "^4.0.0"
   },
   "scripts": {
     "build-css": "node-sass-chokidar --include-path ./src --include-path ./node_modules src/ -o src/",

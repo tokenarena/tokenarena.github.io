@@ -6,6 +6,11 @@ import BondedTokenTransact from './BondedTokenTransact.js';
 import BondedTokenAdvanced from './BondedTokenAdvanced.js';
 import { Grid, Row, Col } from "react-bootstrap";
 
+import { connect } from 'react-redux';
+import * as actions from '../../store/actions/index';
+
+
+
 // import {Decimal} from 'decimal.js';
 
 var BigNumber = require('bignumber.js');
@@ -84,8 +89,6 @@ class BondedToken extends React.Component {
       4: '0x5df73d8fd2d8e6c6de24b731bdc295b2d915d0e9'
     }
 
-
-    this.toggleAdvanced = this.toggleAdvanced.bind(this)
     this.toggleBuy = this.toggleBuy.bind(this)
     this.submit = this.submit.bind(this)
     this.onChange = this.onChange.bind(this)
@@ -152,11 +155,7 @@ class BondedToken extends React.Component {
       isBuy: !this.state.isBuy
     })
   }
-  toggleAdvanced() {
-    this.setState({
-      advanced: !this.state.advanced
-    })
-  }
+
   onChange(event, type) {
     if (type === 'address') {
       if (event.target.value && !utils.isAddress(event.target.value)) {
@@ -466,6 +465,7 @@ class BondedToken extends React.Component {
       if (this.state.totalSupplyWei !== totalSupply) {
         return this.relevantCoin.decimals().then((decimals) => {
           decimals = utils.padRight('10', parseInt(decimals, 10));
+          this.props.onSetSupply();
           this.setState({
             totalSupplyWei: totalSupply,
             totalSupply: new BigNumber(totalSupply).div(decimals).toString()
@@ -488,4 +488,14 @@ class BondedToken extends React.Component {
 
 
 }
-export default BondedToken;
+
+
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onSetSupply: (totalSupply) => dispatch(actions.setSupply(totalSupply))
+  };
+}
+
+
+export default connect(null, mapDispatchToProps)(BondedToken);
