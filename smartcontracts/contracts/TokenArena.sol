@@ -1,9 +1,9 @@
 pragma solidity ^0.4.24;
 
-import "base/TokenExp.sol";
-import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
+import "./base/TokenExp.sol";
+import "./Controller.sol";
 
-contract TokenArena is TokenExp, Ownable {
+contract TokenArena is TokenExp {
 
   // Name of user or token arena
   string public name;
@@ -12,17 +12,17 @@ contract TokenArena is TokenExp, Ownable {
   bool public votingIsOpen;
   uint public votingStartsAt;
   uint[] public optionStakes;
-  bytes[] public options;
-  uint public isWinnerChosen = true; // initialize to true so that initial `createVote()` succeeds
+  bytes32[] public options;
+  bool public isWinnerChosen = true; // initialize to true so that initial `createVote()` succeeds
   uint public winnerOptionIndex;
   mapping(address => uint) public lockedUntil;
-  uint public lockingPeriod = 1 day; // 3600 * 24
+  uint public lockingPeriod = 1 days; // 3600 * 24
 
   constructor(address _controllerAddress, string _name)
     TokenExp(18, 900) // 18 as bondingCurveDecimals, 90% sell curve (10% penalty compared to buys)
   {
     controller = Controller(_controllerAddress);
-    controller.registerTokenArea(address(this), _name);
+    controller.registerTokenArena(address(this), _name);
 
     name = _name;
   }
@@ -32,13 +32,13 @@ contract TokenArena is TokenExp, Ownable {
     require(_optionIndex < options.length, 'Invalid option');
     require(now < lockedUntil[msg.sender], 'User is locked');
 
-    optionStakes[_optionIndex] = optionStakes[_optionIndex] + balance[msg.sender];
+    optionStakes[_optionIndex] = optionStakes[_optionIndex] + balances[msg.sender];
     lockedUntil[msg.sender] = now + lockingPeriod;
 
     return true;
   }
 
-  function createVote(uint _startsAt, bytes[] _options) external onlyOwner returns (bool) {
+  function createVote(uint _startsAt, bytes32[] _options) external onlyOwner returns (bool) {
     require(_startsAt > now, 'Voting must be in the future');
     require(isWinnerChosen == true, 'Previous voting is still running');
 
@@ -49,9 +49,9 @@ contract TokenArena is TokenExp, Ownable {
     return true;
   }
 
-  function resolve(uint _winnerIndex) external onlyOwner returns (true) {
+  function resolve(uint _winnerIndex) external onlyOwner returns (bool) {
     require(_winnerIndex < options.length);
-    require(isWinnerChosen == false, 'Winner already chosen or no voting to resolve')
+    require(isWinnerChosen == false, 'Winner already chosen or no voting to resolve');
 
     votingStartsAt = 0;
     winnerOptionIndex = _winnerIndex;

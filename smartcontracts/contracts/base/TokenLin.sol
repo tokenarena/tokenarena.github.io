@@ -1,8 +1,8 @@
 pragma solidity ^0.4.24;
 
-import "zeppelin-solidity/contracts/token/ERC20/StandardToken.sol";
+import "./erc20.sol";
 
-contract TokenLin is StandardToken {
+contract TokenLin is ERC20 {
   event LogMint(uint256 amountMinted, uint256 totalCost);
   event LogWithdraw(uint256 amountWithdrawn, uint256 reward);
   event LogBondingCurve(string logString, uint256 value);
@@ -10,6 +10,7 @@ contract TokenLin is StandardToken {
   // must be divisible by 2 & at least 14 to accurately calculate cost
   uint8 public bondingCurveDecimals;
   uint256 public poolBalance = 0;
+  uint256 public totalSupply_;
 
   // shorthand for decimal
   // dec = (10 ** uint256(bondingCurveDecimals));
@@ -50,15 +51,6 @@ contract TokenLin is StandardToken {
 
     return finalPrice;
   }
-
-
-  /**
-   * @dev calculates the area under the curve based on amount
-   * this should not be needed - the ui should compute amount on the client
-   * @return tokenAmount
-   */
-  function estimateTokenAmountForPrice(uint256 price) public view returns(uint256 tokenAmount);
-
 
   /**
    * @dev default function

@@ -1,8 +1,8 @@
 pragma solidity ^0.4.24;
 
-import "zeppelin-solidity/contracts/token/ERC20/StandardToken.sol";
+import "./erc20.sol";
 
-contract Token is StandardToken {
+contract Token is ERC20 {
   event LogMint(uint256 amountMinted, uint256 totalCost);
   event LogWithdraw(uint256 amountWithdrawn, uint256 reward);
   event LogBondingCurve(string logString, uint256 value);
@@ -10,7 +10,7 @@ contract Token is StandardToken {
   // must be divisible by 2 & at least 14 to accurately calculate cost
   uint8 public bondingCurveDecimals;
   uint256 public poolBalance = 0;
-
+  uint256 public totalSupply_;
 
   // shorthand for decimal
   // dec = (10 ** uint256(bondingCurveDecimals));
@@ -71,14 +71,15 @@ contract Token is StandardToken {
     // Send back unspent funds
     if (remainingFunds > 0) {
       msg.sender.transfer(remainingFunds);
-      Transfer(0x0, msg.sender, remainingFunds);
+      emit Transfer(0x0, msg.sender, remainingFunds);
     }
 
     totalSupply_ = totalSupply_.add(tokensToMint);
+    transfer(msg.sender, tokensToMint);
     balances[msg.sender] = balances[msg.sender].add(tokensToMint);
     poolBalance = poolBalance.add(usedWei);
 
-    LogMint(tokensToMint, usedWei);
+    emit LogMint(tokensToMint, usedWei);
     return true;
   }
 
@@ -88,7 +89,7 @@ contract Token is StandardToken {
    * @return {bool}
    */
   function sellTokens(uint256 _amountToWithdraw) public returns(bool) {
-    require(_amountToWithdraw > 0 && balances[msg.sender] >= _amountToWithdraw);
+    require(_amountToWithdraw > 0 && balanceOf(msg.sender) >= _amountToWithdraw);
 
     uint256 reward = getSellReward(_amountToWithdraw);
     msg.sender.transfer(reward);
@@ -96,7 +97,7 @@ contract Token is StandardToken {
     poolBalance = poolBalance.sub(reward);
     balances[msg.sender] = balances[msg.sender].sub(_amountToWithdraw);
     totalSupply_ = totalSupply_.sub(_amountToWithdraw);
-    LogWithdraw(_amountToWithdraw, reward);
+    emit LogWithdraw(_amountToWithdraw, reward);
 
     return true;
   }

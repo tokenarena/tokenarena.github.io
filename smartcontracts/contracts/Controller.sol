@@ -25,7 +25,7 @@ contract Controller is Ownable {
     require(tokenArenas[swappedIndex] != address(0));
 
     indexes[_tokenArenaAddress] = 0;
-    address lastArena = tokenArenas.length - 1;
+    address lastArena = tokenArenas[tokenArenas.length - 1];
     tokenArenas[swappedIndex] = lastArena;
     indexes[lastArena] = swappedIndex;
     tokenArenas.length--;
@@ -43,7 +43,7 @@ contract Controller is Ownable {
       return tokenArenas[_index];
   }
 
-  function isContract(address _address) private returns (bool isContract){
+  function isContract(address _address) private returns (bool){
     uint32 size;
     assembly {
       size := extcodesize(_address)

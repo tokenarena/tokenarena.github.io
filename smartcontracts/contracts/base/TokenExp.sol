@@ -1,8 +1,9 @@
 pragma solidity ^0.4.24;
 
-import "openzeppelin-solidity/contracts/token/ERC20/ERC20.sol";
+import "./erc20.sol";
+import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
-contract TokenExp is ERC20 {
+contract TokenExp is ERC20, Ownable {
   event LogMint(uint256 amountMinted, uint256 totalCost);
   event LogWithdraw(uint256 amountWithdrawn, uint256 reward);
   event LogBondingCurve(string logString, uint256 value);
@@ -10,6 +11,7 @@ contract TokenExp is ERC20 {
   // must be divisible by 2 & at least 14 to accurately calculate cost
   uint8 public bondingCurveDecimals;
   uint256 public poolBalance = 0;
+  uint256 public totalSupply_;
 
   // shorthand for decimal
   // dec = (10 ** uint256(bondingCurveDecimals));
@@ -25,7 +27,7 @@ contract TokenExp is ERC20 {
   uint256 public multiple;
 
   constructor(
-      uint256 _bondingCurveDecimals,
+      uint8 _bondingCurveDecimals,
       uint _sellRatioPerMille
   )
     public
@@ -54,13 +56,14 @@ contract TokenExp is ERC20 {
   /**
    * Get sell price for tokenAmount
    * @param tokenAmount token amount param
-   * @return {uint} finalPrice
+   * @return {uint} finalReward
    */
   function getSellReward(uint256 tokenAmount) public view returns(uint) {
     require(totalSupply_ >= tokenAmount);
 
+    uint256 totalTokens = totalSupply_ - tokenAmount;
     uint256 buyPrice = poolBalance - multiple * totalTokens * totalTokens * totalTokens * 1 / ( 3 * dec * dec * dec);
-    uint finalReward = sellRatioPerMille * buyPrice / 1000
+    uint finalReward = sellRatioPerMille * buyPrice / 1000;
 
     uint ownerPayout = buyPrice - finalReward;
     owner.transfer(ownerPayout);
@@ -91,28 +94,16 @@ contract TokenExp is ERC20 {
        }
      }
 
-     return (i - 1) * d;
+     return (i - 1) * dec;
    }
-
-
-  /**
-   * @dev default function
-   * this is a disrete approximation and shouldn't be used in practice
-   * gas price for this one is 128686
-   */
-  function() public payable {
-    uint256 amount = estimateTokenAmountForPrice(msg.value);
-    buyTokens(amount);
-  }
 
   /**
    * @dev Buy tokens
    * gas cost ~ $1.5
-   * @param tokensToMint tokens we want to buy
    * @return {bool}
    */
-  function buyTokens(uint256 wei) public payable returns(bool) {
-    uint256 tokenAmount = estimateTokenAmountForPrice(wei);
+  function buyTokens(uint256 _wei) public payable returns (bool) {
+    uint256 tokenAmount = estimateTokenAmountForPrice(_wei);
     uint256 priceForAmount = getBuyPrice(tokenAmount);
     require(msg.value >= priceForAmount, 'Insufficient Ether to buy desired amount of tokens');
 
@@ -122,14 +113,14 @@ contract TokenExp is ERC20 {
     // Send back unspent funds
     if (remainingFunds > 0) {
       msg.sender.transfer(remainingFunds);
-      Transfer(0x0, msg.sender, remainingFunds);
+      emit Transfer(0x0, msg.sender, remainingFunds);
     }
 
     totalSupply_ = totalSupply_.add(tokenAmount);
     balances[msg.sender] = balances[msg.sender].add(tokenAmount);
     poolBalance = poolBalance.add(usedWei);
 
-    LogMint(tokenAmount, usedWei);
+    emit LogMint(tokenAmount, usedWei);
     return true;
   }
 
@@ -148,7 +139,7 @@ contract TokenExp is ERC20 {
     poolBalance = poolBalance.sub(reward);
     balances[msg.sender] = balances[msg.sender].sub(_amountToWithdraw);
     totalSupply_ = totalSupply_.sub(_amountToWithdraw);
-    LogWithdraw(_amountToWithdraw, reward);
+    emit LogWithdraw(_amountToWithdraw, reward);
 
     return true;
   }
