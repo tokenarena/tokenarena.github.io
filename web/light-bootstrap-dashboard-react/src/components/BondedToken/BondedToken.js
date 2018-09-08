@@ -35,7 +35,8 @@ class BondedToken extends React.Component {
               <BondedTokenTransact
                 submit={this.submit}
                 calculateSaleReturn={this.calculateSaleReturn}
-                calculatePurchaseReturn={this.calculatePurchaseReturn}
+                calculateBuyPrice={this.calculateBuyPrice}
+                calculateMaxPurchaseReturn={this.calculateMaxPurchaseReturn}
                 onChange={this.onChange}
                 amount={this.state.amount}
                 bigMax={this.bigMax}
@@ -89,7 +90,9 @@ class BondedToken extends React.Component {
     this.submit = this.submit.bind(this)
     this.onChange = this.onChange.bind(this)
     this.calculateSaleReturn = this.calculateSaleReturn.bind(this)
-    this.calculatePurchaseReturn = this.calculatePurchaseReturn.bind(this)
+    this.calculateMaxPurchaseReturn = this.calculateMaxPurchaseReturn.bind(this)
+    this.calculateBuyPrice = this.calculateBuyPrice.bind(this)
+
 
     this.bigMax = 1000000
     this.state = {
@@ -287,15 +290,15 @@ class BondedToken extends React.Component {
     return Math.round(foo * 10000) / 10000
   }
 
-  // calculatePurchaseReturn
+  // calculateMaxPurchaseReturn (number of tokens you get if you pay entire wallet balance)
   // Return = _supply * ((1 + _depositAmount / _connectorBalance) ^ (_connectorWeight / 1000000) - 1)
-  calculatePurchaseReturn(props) {
+  calculateMaxPurchaseReturn(props) {
     let { totalSupply, balance, ratio, amount } = props || this.state;
     if (!totalSupply || !balance || !ratio || !amount) return '0'
     let _supply = parseInt(totalSupply, 10)
     let _connectorBalance = parseInt(balance, 10)
     let _connectorWeight = parseFloat(ratio, 10)
-    let _depositAmount = parseInt(this.state.amount, 10)
+    let _depositAmount = parseInt(this.state.walletBalance, 10)
     if (_supply === 0 || _connectorBalance === 0 || _connectorWeight === 0 || _depositAmount === 0) return '0'
 
     // special case if the weight = 100%

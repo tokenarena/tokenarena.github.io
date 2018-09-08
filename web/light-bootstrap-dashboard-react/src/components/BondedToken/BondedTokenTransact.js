@@ -13,13 +13,13 @@ class BondedTokenTransact extends React.Component {
           switchStyles={{width: 80}}
           value={this.props.isBuy}
           circleStyles={{diameter: 16, onColor: 'grey', offColor: 'grey'}} 
-          labels={{on: 'Spend', off: 'Sell'}}
+          labels={{on: 'Buy', off: 'Sell'}}
           onChange={event => this.props.toggleBuy()}
           />
-          <label className={this.props.isBuy ? "--bondedToken-eth" : "--bondedToken-token"}>
+          <label className={"--bondedToken-token"}>
             <input
               type="number"
-              max={this.props.isBuy ? (this.props.address ? this.props.walletBalance : this.props.bigMax) : (this.props.address ? this.props.tokenBalance : this.props.totalSupply)}
+              max={this.props.isBuy ? (this.props.address ? this.props.calculateMaxPurchaseReturn() : this.props.bigMax) : (this.props.address ? this.props.tokenBalance : this.props.totalSupply)}
               value={this.props.amount}
               onChange={event => {
                 if (event.target.value && new BigNumber(event.target.value).gte(event.target.max)) {
@@ -33,9 +33,9 @@ class BondedTokenTransact extends React.Component {
         </div>
         <div className="--bondedToken-flex --bondedTokenTransact">
           <div>For</div>
-          <label className={this.props.isBuy ? "--bondedToken-token" : "--bondedToken-eth"}>
+          <label className={"--bondedToken-eth"}>
             <div>
-              {this.props.isBuy ? this.props.calculatePurchaseReturn() : this.props.calculateSaleReturn()}
+              {this.props.isBuy ? this.props.calculateBuyPrice() : this.props.calculateBuyPrice()}
             </div>
           </label>
         </div>
