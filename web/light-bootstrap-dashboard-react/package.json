@@ -3,6 +3,7 @@
   "version": "1.2.0",
   "private": true,
   "dependencies": {
+    "bonded-token": "0.0.2",
     "bootstrap": "3.3.7",
     "chartist": "0.10.1",
     "node-sass": "4.6.1",
@@ -12,10 +13,12 @@
     "react-bootstrap": "0.32.1",
     "react-chartist": "0.13.1",
     "react-dom": "16.2.0",
+    "react-easy-chart": "^1.0.0",
     "react-google-maps": "9.4.5",
     "react-notification-system": "0.2.17",
     "react-router-dom": "4.2.2",
-    "react-scripts": "1.1.1"
+    "react-scripts": "1.1.1",
+    "recharts": "^1.2.0"
   },
   "scripts": {
     "build-css": "node-sass-chokidar --include-path ./src --include-path ./node_modules src/ -o src/",

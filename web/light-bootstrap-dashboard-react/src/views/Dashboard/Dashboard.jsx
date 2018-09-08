@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import ChartistGraph from "react-chartist";
 import { Grid, Row, Col } from "react-bootstrap";
+import BondedToken from "components/BondedToken/BondedToken";
 
 import { Card } from "components/Card/Card.jsx";
 import { StatsCard } from "components/StatsCard/StatsCard.jsx";
@@ -18,6 +19,11 @@ import {
   legendBar
 } from "variables/Variables.jsx";
 
+import { UserCard } from "components/UserCard/UserCard.jsx";
+import Button from "components/CustomButton/CustomButton.jsx";
+
+import avatar from "assets/img/faces/face-3.jpg";
+
 class Dashboard extends Component {
   createLegend(json) {
     var legend = [];
@@ -30,119 +36,48 @@ class Dashboard extends Component {
     return legend;
   }
   render() {
+    let contractAddress = '0xN07AR34LC0N7R4C74DDR355D0N0TU5E7H15H3110M0M'
+
     return (
       <div className="content">
         <Grid fluid>
           <Row>
-            <Col lg={3} sm={6}>
-              <StatsCard
-                bigIcon={<i className="pe-7s-server text-warning" />}
-                statsText="Capacity"
-                statsValue="105GB"
-                statsIcon={<i className="fa fa-refresh" />}
-                statsIconText="Updated now"
-              />
-            </Col>
-            <Col lg={3} sm={6}>
-              <StatsCard
-                bigIcon={<i className="pe-7s-wallet text-success" />}
-                statsText="Revenue"
-                statsValue="$1,345"
-                statsIcon={<i className="fa fa-calendar-o" />}
-                statsIconText="Last day"
-              />
-            </Col>
-            <Col lg={3} sm={6}>
-              <StatsCard
-                bigIcon={<i className="pe-7s-graph1 text-danger" />}
-                statsText="Errors"
-                statsValue="23"
-                statsIcon={<i className="fa fa-clock-o" />}
-                statsIconText="In the last hour"
-              />
-            </Col>
-            <Col lg={3} sm={6}>
-              <StatsCard
-                bigIcon={<i className="fa fa-twitter text-info" />}
-                statsText="Followers"
-                statsValue="+45"
-                statsIcon={<i className="fa fa-refresh" />}
-                statsIconText="Updated now"
-              />
-            </Col>
-          </Row>
-          <Row>
-            <Col md={8}>
-              <Card
-                statsIcon="fa fa-history"
-                id="chartHours"
-                title="Users Behavior"
-                category="24 Hours performance"
-                stats="Updated 3 minutes ago"
-                content={
-                  <div className="ct-chart">
-                    <ChartistGraph
-                      data={dataSales}
-                      type="Line"
-                      options={optionsSales}
-                      responsiveOptions={responsiveSales}
-                    />
-                  </div>
-                }
-                legend={
-                  <div className="legend">{this.createLegend(legendSales)}</div>
-                }
-              />
-            </Col>
             <Col md={4}>
-              <Card
-                statsIcon="fa fa-clock-o"
-                title="Email Statistics"
-                category="Last Campaign Performance"
-                stats="Campaign sent 2 days ago"
-                content={
-                  <div
-                    id="chartPreferences"
-                    className="ct-chart ct-perfect-fourth"
-                  >
-                    <ChartistGraph data={dataPie} type="Pie" />
-                  </div>
+
+              <UserCard
+                bgImage="https://ununsplash.imgix.net/photo-1431578500526-4d9613015464?fit=crop&fm=jpg&h=300&q=75&w=400"
+                avatar={avatar}
+                name="Mike Andrew"
+                userName="michael24"
+                description={
+                  <span>
+                    "Lamborghini Mercy
+                    <br />
+                    Your chick she so thirsty
+                    <br />
+                    I'm in that two seat Lambo"
+                  </span>
                 }
-                legend={
-                  <div className="legend">{this.createLegend(legendPie)}</div>
+                socials={
+                  <div>
+                    <Button simple>
+                      <i className="fa fa-facebook-square" />
+                    </Button>
+                    <Button simple>
+                      <i className="fa fa-twitter" />
+                    </Button>
+                    <Button simple>
+                      <i className="fa fa-google-plus-square" />
+                    </Button>
+                  </div>
                 }
               />
             </Col>
-          </Row>
+            <Col md={8}>
 
-          <Row>
-            <Col md={6}>
               <Card
-                id="chartActivity"
-                title="2014 Sales"
-                category="All products including Taxes"
-                stats="Data information certified"
-                statsIcon="fa fa-check"
-                content={
-                  <div className="ct-chart">
-                    <ChartistGraph
-                      data={dataBar}
-                      type="Bar"
-                      options={optionsBar}
-                      responsiveOptions={responsiveBar}
-                    />
-                  </div>
-                }
-                legend={
-                  <div className="legend">{this.createLegend(legendBar)}</div>
-                }
-              />
-            </Col>
-
-            <Col md={6}>
-              <Card
-                title="Tasks"
-                category="Backend development"
+                title="Voting"
+                category="Tell me what I should do during my next podcast"
                 stats="Updated 3 minutes ago"
                 statsIcon="fa fa-history"
                 content={
@@ -153,8 +88,72 @@ class Dashboard extends Component {
                   </div>
                 }
               />
+
+
             </Col>
           </Row>
+          <Row>
+            <Col md={3}>
+              <StatsCard
+                bigIcon={<i className="pe-7s-wallet text-success" />}
+                statsText="Pool Balance"
+                statsValue="345 ETH"
+                statsIcon={<i className="fa fa-calendar-o" />}
+                statsIconText="Last day"
+              />
+            </Col>
+            <Col md={3}>
+
+              <StatsCard
+                bigIcon={<i className="pe-7s-server text-warning" />}
+                statsText="Total Supply"
+                statsValue="256.42"
+                statsIcon={<i className="fa fa-refresh" />}
+                statsIconText="Updated now"
+              />
+            </Col>
+
+            <Col md={3}>
+
+              <StatsCard
+                bigIcon={<i className="pe-7s-wallet text-success" />}
+                statsText="Next show"
+                statsValue="$1,345"
+                statsIcon={<i className="fa fa-calendar-o" />}
+                statsIconText="Last day"
+              />
+            </Col>
+
+            <Col md={3}>
+
+              <StatsCard
+                bigIcon={<i className="pe-7s-wallet text-success" />}
+                statsText="Average committed"
+                statsValue="$1,345"
+                statsIcon={<i className="fa fa-calendar-o" />}
+                statsIconText="Last day"
+              />
+            </Col>
+
+          </Row>
+          <Row h={100}>
+
+            <Card
+              statsIcon="fa fa-history"
+              id="chartHours"
+              title="Token Bonding Curve"
+              category="24 Hours performance"
+              stats="Updated 3 minutes ago"
+              content={
+                <div className="ct-chart">
+                  <BondedToken address={contractAddress} relevant={true} />
+
+                </div>
+              }
+
+            />
+          </Row>
+
         </Grid>
       </div>
     );
