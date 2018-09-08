@@ -24,11 +24,11 @@ module.exports = {
   networks: {
     ropsten: {
       provider: function() {
-        return new HDWalletProvider('<INSERT MNEMONIC HERE>', "https://ropsten.infura.io/v3/" + INFURA_API_KEY)
+        return new HDWalletProvider('tail mimic satisfy bicycle steak electric taxi marine electric frame canal seed', "https://ropsten.infura.io/v3/" + INFURA_API_KEY)
       },
       network_id: 4,
-      gas: 7000000,
-      gasPrice: 10e9
+      gas: 8000000,
+      gasPrice: 20e9
     }
   }
 };

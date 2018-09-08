@@ -68,7 +68,7 @@ contract TokenArena is TokenExp {
   }
 
   function sell(uint256 _amount) public returns(bool) {
-    require(now < lockedUntil[msg.sender]);
+    require(now > lockedUntil[msg.sender]);
     return sellTokens(_amount);
   }
 }
