@@ -10,8 +10,11 @@ contract TokenArena is TokenExp, Ownable {
   Controller controller;
 
   bool votingIsOpen;
+  uint votingStartsAt;
   uint[] optionStakes;
   bytes[] options;
+  uint isWinnerChosen;
+  uint winnerOptionIndex;
   mapping(address => uint) public lockedUntil;
   uint lockingPeriod = 1 day; // 3600 * 24
 
@@ -24,23 +27,36 @@ contract TokenArena is TokenExp, Ownable {
     name = _name;
   }
 
-  function vote(uint256 _optionIndex) external {
-    require(votingIsOpen, 'Voting is not open');
+  function vote(uint256 _optionIndex) external returns (bool) {
+    require(votingStartsAt <= now && votingStartsAt != 0, 'Voting is not open or no voting exists');
     require(_optionIndex < options.length, 'Invalid option');
-    require(now < lockedUntil[msg.sender]);
+    require(now < lockedUntil[msg.sender], 'User is locked');
 
     optionStakes[_optionIndex] = optionStakes[_optionIndex] + balance[msg.sender];
     lockedUntil[msg.sender] = now + lockingPeriod;
 
-
+    return true;
   }
 
-  function createVote(bytes[] _options) external onlyOwner {
+  function createVote(uint _startsAt, bytes[] _options) external onlyOwner returns (bool) {
+    require(_startsAt > now, 'Voting must be in the future');
+    votingStartsAt = _startsAt;
+    options = _options;
+    isWinnerChosen = false;
 
+    return true;
   }
 
-  function resolve(uint _winnerIndex) external onlyOwner {
+  function resolve(uint _winnerIndex) external onlyOwner returns (true) {
+    require(_winnerIndex < options.length);
 
+    votingStartsAt = 0;
+    winnerOptionIndex = _winnerIndex;
+    isWinnerChosen = true;
+
+    // TODO: any payouts/incentivation happening here?
+
+    return true;
   }
 
   function buy() public payable returns(bool) {
