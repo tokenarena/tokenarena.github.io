@@ -6,17 +6,17 @@ import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 contract TokenArena is TokenExp, Ownable {
 
   // Name of user or token arena
-  string name;
-  Controller controller;
+  string public name;
+  Controller public controller;
 
-  bool votingIsOpen;
-  uint votingStartsAt;
-  uint[] optionStakes;
-  bytes[] options;
-  uint isWinnerChosen;
-  uint winnerOptionIndex;
+  bool public votingIsOpen;
+  uint public votingStartsAt;
+  uint[] public optionStakes;
+  bytes[] public options;
+  uint public isWinnerChosen = true; // initialize to true so that initial `createVote()` succeeds
+  uint public winnerOptionIndex;
   mapping(address => uint) public lockedUntil;
-  uint lockingPeriod = 1 day; // 3600 * 24
+  uint public lockingPeriod = 1 day; // 3600 * 24
 
   constructor(address _controllerAddress, string _name)
     TokenExp(18, 900) // 18 as bondingCurveDecimals, 90% sell curve (10% penalty compared to buys)
@@ -40,6 +40,8 @@ contract TokenArena is TokenExp, Ownable {
 
   function createVote(uint _startsAt, bytes[] _options) external onlyOwner returns (bool) {
     require(_startsAt > now, 'Voting must be in the future');
+    require(isWinnerChosen == true, 'Previous voting is still running');
+
     votingStartsAt = _startsAt;
     options = _options;
     isWinnerChosen = false;
@@ -49,6 +51,7 @@ contract TokenArena is TokenExp, Ownable {
 
   function resolve(uint _winnerIndex) external onlyOwner returns (true) {
     require(_winnerIndex < options.length);
+    require(isWinnerChosen == false, 'Winner already chosen or no voting to resolve')
 
     votingStartsAt = 0;
     winnerOptionIndex = _winnerIndex;
