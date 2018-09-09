@@ -450,13 +450,13 @@ class RelevantCoin {
   }
   buy (buyAmount, account) {
     if (!account) return Promise.reject(new Error('Unlock Account'))
-    buyAmount = Web3.utils.toWei(buyAmount)
-
-    return this.relevantCoin.methods.buy().send({from: account, value: new BN(buyAmount, 10).toString(10)})
+    const bn = new BN(buyAmount, 10).toString(10);
+    buyAmount = Web3.utils.toWei(bn);
+    return this.relevantCoin.methods.buy().send({from: account, value: buyAmount})
   }
   sell (sellAmount, account) {
     if (!account) return Promise.reject(new Error('Unlock Account'))
-    return this.relevantCoin.methods.sell(new BN(sellAmount, 10)).send({from: account})
+    return this.relevantCoin.methods.sell(sellAmount).send({from: account})
   }
   transferOwnership (newOwner) {
     if (!this.account) return Promise.reject(new Error('Unlock Account'))

@@ -4,6 +4,8 @@ import ReactDOM from "react-dom";
 import { Provider } from 'react-redux';
 import { HashRouter, Route, Switch } from "react-router-dom";
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
+import thunk from 'redux-thunk';
+
 
 import indexRoutes from "routes/index.jsx";
 
@@ -15,8 +17,11 @@ import "./assets/css/pe-icon-7-stroke.css";
 
 import bondedTokenReducer from './store/reducer/bondedToken';
 
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
-const store = createStore(bondedTokenReducer, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__())
+const store = createStore(bondedTokenReducer, composeEnhancers(
+  applyMiddleware(thunk)
+));
 
 ReactDOM.render(
   <Provider store={store}>

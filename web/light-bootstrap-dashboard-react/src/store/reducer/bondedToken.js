@@ -3,7 +3,7 @@ import { updateObject } from '../utility'
 
 
 const initialState = {
-    totalSupply: 0
+    totalSupply: null
 };
 
 const setSupply = (state, action) => {

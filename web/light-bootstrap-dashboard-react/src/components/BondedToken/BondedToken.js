@@ -176,7 +176,7 @@ class BondedToken extends React.Component {
     console.log('submit')
     this.setState({ loading: 'Please Review & Sign Transaction' })
     if (this.state.isBuy) {
-      this.relevantCoin.buy(this.state.amount, this.state.account)
+      this.relevantCoin.buy(this.calculateBuyPrice(), this.state.account)
         .on('transactionHash', (hash) => {
           console.log('transactionHash', hash)
           this.setState({ loading: 'Transaction is waiting for confirmation' })
@@ -460,12 +460,13 @@ class BondedToken extends React.Component {
       }
     })
   }
+  
   checkSupply() {
     return this.relevantCoin.totalSupply().then((totalSupply) => {
       if (this.state.totalSupplyWei !== totalSupply) {
         return this.relevantCoin.decimals().then((decimals) => {
           decimals = utils.padRight('10', parseInt(decimals, 10));
-          this.props.onSetSupply();
+          this.props.onSetSupply(new BigNumber(totalSupply).div(decimals).toString());
           this.setState({
             totalSupplyWei: totalSupply,
             totalSupply: new BigNumber(totalSupply).div(decimals).toString()
@@ -474,6 +475,7 @@ class BondedToken extends React.Component {
       }
     })
   }
+
   checkRatio() {
     return this.relevantCoin.reserveRatio().then((reserveRatio) => {
       reserveRatio = new BigNumber(reserveRatio).div('1000000')
