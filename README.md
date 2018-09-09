@@ -23,3 +23,6 @@ Inside `/smartcontracts`, run the following command to deploy on the Ropsten tes
 ```
 truffle migrate --network ropsten --reset
 ```
+
+Keynote presentation:
+https://drive.google.com/open?id=1ZpGVhzhD0b7aZYjKrCDBWvc5f8a9E6DT
