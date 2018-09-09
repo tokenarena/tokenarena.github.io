@@ -105,4 +105,5 @@ class BondedTokenAdvanced extends React.Component {
 
 };
 
+
 export default BondedTokenAdvanced;

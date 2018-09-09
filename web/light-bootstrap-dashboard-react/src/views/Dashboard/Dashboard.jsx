@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import ChartistGraph from "react-chartist";
 import { Grid, Row, Col } from "react-bootstrap";
 import BondedToken from "components/BondedToken/BondedToken";
 import { connect } from 'react-redux';
